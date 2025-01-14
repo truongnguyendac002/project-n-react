@@ -1,0 +1,81 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Các thư mục build được tạo ra bởi IDE và hệ thống biên dịch
+/target/
+/build/
+
+/.svn/
+/.idea/
+/.vscode/
+/*.iml
+
+# Các tệp cấu hình của IDE, không cần thiết phải đẩy lên repository
+/.idea/
+/.vscode/
+/*.iml
+*.ipr
+*.iws
+
+# Các tệp cấu hình IntelliJ IDEA
+/.idea
+
+# Các tệp log
+*.log
+
+# Các thư mục chứa file tạm hoặc cache
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+
+# Các thư mục chứa các phụ thuộc hoặc file cache
+/.m2/
+/.gradle/
+/node_modules/
+
+# Các tệp cấu hình của hệ thống
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Tệp local của các datasource, cấu hình của môi trường phát triển
+/dataSources/
+/dataSources.local.xml
+
+# Tệp HTTP Requests
+/httpRequests/
+
+# Tệp Workspace
+/workspace.xml
+
+# Thư mục shelf
+/shelf/
+
+# Cấu hình môi trường phát triển local
+.env
