@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { DatePicker, Table, Checkbox } from "antd";
+import { DatePicker, Table, Checkbox, Button } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import { GoldFilled } from '@ant-design/icons'; 
+import { GoldFilled } from '@ant-design/icons';
+import DiceModal from "../components/reward/diceModal";
 
 interface Quest {
   key: string;
@@ -21,7 +22,7 @@ interface QuestColumns {
 
 function QuestPage() {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
-
+  const [diceModalVisible, setDiceModalVisible] = useState<boolean>(false);
   const [quests, setQuests] = useState<Quest[]>([
     {
       key: "1",
@@ -42,13 +43,11 @@ function QuestPage() {
 
   ]);
 
-  // Tính tổng điểm
   const totalCoins = quests.reduce(
     (sum, quest) => (quest.completed ? sum + quest.points : sum),
     0
   );
 
-  // Xử lý thay đổi checkbox "Hoàn thành"
   const handleCheckboxChange = (key: string) => {
     setQuests((prevQuests) =>
       prevQuests.map((quest) =>
@@ -57,7 +56,12 @@ function QuestPage() {
     );
   };
 
-  const changeDate = (date: Dayjs | null) => { // Chuyển sang Dayjs
+  const handleRollDice = (record: Quest) => {
+    console.log(record);
+    setDiceModalVisible(true);
+  }
+
+  const changeDate = (date: Dayjs | null) => {
     setSelectedDate(date ? date : selectedDate);
   };
 
@@ -78,6 +82,11 @@ function QuestPage() {
       key: "description",
     },
     {
+      title: "Điểm",
+      dataIndex: "points",
+      key: "points",
+    },
+    {
       title: "Hoàn thành",
       key: "completed",
       render: (_, record: Quest) => (
@@ -88,10 +97,16 @@ function QuestPage() {
       ),
     },
     {
-      title: "Điểm",
-      dataIndex: "points",
-      key: "points",
-    },
+      title: "Roll Dice",
+      key: "roll dice",
+      render: (_, record: Quest) => (
+        <Button
+          onClick={() => { handleRollDice(record) }}
+        >
+          Roll Dice
+        </Button>
+      )
+    }
   ];
 
   return (
@@ -115,6 +130,7 @@ function QuestPage() {
       <div className="flex mb-6">
         {/* Ảnh GIF bên trái */}
         <div className="w-1/3 pr-4">
+
           <img
             src="https://media.giphy.com/media/l0ExdMHUDKteztyfe/giphy.gif"
             alt="Capybara Fighting Monsters"
@@ -122,18 +138,20 @@ function QuestPage() {
           />
         </div>
 
-        <div className="w-2/3">
+        <div className="flex-1">
           <div className="bg-white rounded-lg shadow-lg p-4">
             <Table
               columns={columns}
               dataSource={quests}
               pagination={false}
               className="ant-table-rounded"
-              scroll={{y : 360}}
+              scroll={{ y: 360 }}
             />
           </div>
         </div>
       </div>
+
+      <DiceModal visible={diceModalVisible} setVisible={setDiceModalVisible} onCancel={() => setDiceModalVisible(false)} />
     </div>
   );
 }

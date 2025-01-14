@@ -1,18 +1,37 @@
 import React from "react";
-import { Modal, Form, Input, Button } from "antd";
+import { Modal, Form, Input, Button, message } from "antd";
+import { RegisterRequest } from "../../payloads/request/registerRequest";
+import { DataResponse } from "../../payloads/response/dataResponse";
+import { register } from "../../services/authService";
 
 interface RegisterModalProps {
     visible: boolean;
+    setVisible: (visible: boolean) => void;
     onCancel: () => void;
-    onRegister: (values: unknown) => void;
 }
 
-const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onCancel, onRegister }) => {
-    const onFinish = (values: unknown) => {
-        console.log("Registration successful:", values);
-        onRegister(values); // Gọi callback khi đăng ký thành công
-    };
+const RegisterModal: React.FC<RegisterModalProps> = ({ visible, setVisible, onCancel }) => {
+    const [loading, setLoading] = React.useState(false);
 
+    const handleRegister = async (values: RegisterRequest) => {
+        try {
+            setLoading(true);
+            const response: DataResponse = await register(values);
+            if (response.respCode === "000") {
+                message.success("Register successfully");
+                setVisible(false);
+            }
+            else {
+                message.error(response.data);
+            }
+        }
+        catch (error) {
+            console.log("Register failed. Please try again." + error);
+        }
+        finally {
+            setLoading(false);
+        }
+    };
     return (
         <>
             <Modal
@@ -26,12 +45,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onCancel, onRegi
                 <Form
                     name="register"
                     layout="vertical"
-                    onFinish={onFinish}
+                    onFinish={handleRegister}
                     autoComplete="off"
                 >
                     <Form.Item
                         label="Full Name"
-                        name="name"
+                        name="FullName"
                         rules={[{ required: true, message: "Please input your full name!" }]}
                     >
                         <Input placeholder="Enter your full name" />
@@ -39,7 +58,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onCancel, onRegi
 
                     <Form.Item
                         label="Email"
-                        name="email"
+                        name="Email"
                         rules={[{ required: true, message: "Please input your email!" }, { type: "email", message: "Invalid email format!" }]}
                     >
                         <Input placeholder="Enter your email" />
@@ -47,21 +66,30 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onCancel, onRegi
 
                     <Form.Item
                         label="Password"
-                        name="password"
-                        rules={[{ required: true, message: "Please input your password!" }]}
-                    >
+                        name="Password"
+                        rules={[
+                            { 
+                                required: true, 
+                                message: "Please input your password!" 
+                            },
+                            // {
+                            //     pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[A-Z]).{8,}$/,
+                            //     message: "Password must be at least 8 characters, with one uppercase letter, one lowercase letter, and one number."
+                            // }
+                        ]}
+                                        >
                         <Input.Password placeholder="Enter your password" />
                     </Form.Item>
 
                     <Form.Item
                         label="Confirm Password"
-                        name="confirmPassword"
-                        dependencies={['password']}
+                        name="ConfirmPassword"
+                        dependencies={['Password']}
                         rules={[
                             { required: true, message: "Please confirm your password!" },
                             ({ getFieldValue }) => ({
                                 validator(_, value) {
-                                    if (!value || getFieldValue('password') === value) {
+                                    if (!value || getFieldValue('Password') === value) {
                                         return Promise.resolve();
                                     }
                                     return Promise.reject(new Error('Passwords do not match!'));
@@ -73,7 +101,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, onCancel, onRegi
                     </Form.Item>
 
                     <Form.Item>
-                        <Button className="" type="primary" htmlType="submit" block>
+                        <Button loading={loading} className="" type="primary" htmlType="submit" block>
                             Register
                         </Button>
                     </Form.Item>
