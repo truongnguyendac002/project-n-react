@@ -7,7 +7,7 @@ import {
   ShopOutlined,
 } from "@ant-design/icons";
 import { useAppSelector } from "../../redux/reduxHook";
-import { IUserProfile } from "../../models/user";
+import { IUserProfile } from "../../models/User";
 
 function Sidebar() {
   const navigate = useNavigate();

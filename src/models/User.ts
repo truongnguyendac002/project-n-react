@@ -5,4 +5,5 @@ export interface IUserProfile {
     email: string;
     profileImg: string;
     status: string;
+    wallet: number;
 }

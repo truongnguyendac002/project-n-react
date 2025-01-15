@@ -1,6 +1,7 @@
-import { useState } from "react";
 import { Table } from "antd";
 import { GoldFilled } from '@ant-design/icons';
+import { useAppSelector } from "../redux/reduxHook";
+import { IUserProfile } from "../models/User";
 
 interface Reward {
   id: number;
@@ -11,8 +12,8 @@ interface Reward {
 }
 
 function RewardPage() {
-  const [totalCoins] = useState(35); // Sử dụng 35 coin làm ví dụ
-
+  const user = useAppSelector<IUserProfile | null>((state) => state.auth.user);
+  console.log(user);
   const rewards: Reward[] = [
     {
       id: 1,
@@ -52,7 +53,7 @@ function RewardPage() {
   ];
 
   const achievedRewards = rewards
-    .filter(reward => totalCoins >= reward.pointsRequired)
+    .filter(reward => user?user.wallet:0 >= reward.pointsRequired)
     .sort((a, b) => a.pointsRequired - b.pointsRequired);
 
   const rewardAchieved = achievedRewards.length > 0 ? achievedRewards[achievedRewards.length - 1] : null;
@@ -80,7 +81,7 @@ function RewardPage() {
       {/* Tổng coin đã kiếm được */}
       <div className="flex justify-between items-center mb-6">
         <div className="text-lg font-bold text-gray-700">
-          Total coins earned today: <span className="text-blue-600">{totalCoins}</span>
+          Total coins earned today: <span className="text-blue-600">{user?.wallet}</span>
           <GoldFilled className="inline-block text-yellow-500 ml-2" />
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { IUserProfile } from "../../models/user";
+import { IUserProfile } from "../../models/User";
 const initialState = {
     user : null as IUserProfile | null,
 };
@@ -20,10 +20,15 @@ export const authSlice = createSlice({
             localStorage.removeItem('access-token');
             localStorage.removeItem('refresh-token');
             return initialState;
+        },
+        addPointsToWallet: (state, action) => {
+            if (state.user) {
+                state.user.wallet += action.payload;
+            }
         }
     },
 });
 
-export const { setUserProfile, getUserProfile, removeUserProfile } = authSlice.actions;
+export const { setUserProfile, getUserProfile, removeUserProfile,addPointsToWallet } = authSlice.actions;
 export default authSlice.reducer;
 

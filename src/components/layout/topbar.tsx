@@ -4,7 +4,7 @@ import type { MenuProps } from "antd";
 import { useState } from "react";
 import LoginModal from "../auth/loginModal";
 import { useAppDispatch, useAppSelector } from "../../redux/reduxHook";
-import { IUserProfile } from "../../models/user";
+import { IUserProfile } from "../../models/User";
 import { removeUserProfile } from "../../redux/slices/authSlice";
 
 

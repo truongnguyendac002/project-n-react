@@ -1,5 +1,5 @@
 
-import { IUserProfile } from '../models/user';
+import { IUserProfile } from '../models/User';
 import { LoginRequest } from '../payloads/request/loginRequest';
 import { RegisterRequest } from '../payloads/request/registerRequest';
 import { DataResponse } from '../payloads/response/dataResponse';

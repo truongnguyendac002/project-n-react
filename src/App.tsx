@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from './redux/reduxHook';
 import { useEffect } from 'react';
 import { fetchUserInfo } from './services/authService';
 import { removeUserProfile, setUserProfile } from './redux/slices/authSlice';
-import { IUserProfile } from './models/user';
+import { IUserProfile } from './models/User';
 
 function App() {
   const user = useAppSelector<IUserProfile | null>((state) => state.auth.user);

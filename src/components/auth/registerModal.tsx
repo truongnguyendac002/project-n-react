@@ -3,7 +3,7 @@ import { Modal, Form, Input, Button, message } from "antd";
 import { RegisterRequest } from "../../payloads/request/registerRequest";
 import { DataResponse } from "../../payloads/response/dataResponse";
 import { register } from "../../services/authService";
-import { IUserProfile } from "../../models/user";
+import { IUserProfile } from "../../models/User";
 
 interface RegisterModalProps {
     visible: boolean;

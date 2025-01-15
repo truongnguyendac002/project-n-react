@@ -2,22 +2,25 @@ import React, { useEffect, useState } from "react";
 import "../../assets/DiceRoller.css";
 import { Modal } from "antd";
 import Confetti from "react-confetti";
+import { useAppDispatch } from "../../redux/reduxHook";
+import { addPointsToWallet } from "../../redux/slices/authSlice";
 
 interface DiceRollerProps {
   isRolling: boolean;
   setIsRolling: (isRolling: boolean) => void;
-  totalScore: number;
   setTotalScore: (totalScore: number) => void;
+  totalScore: number | null;
+  setRollCompleted: (rollCompleted: boolean) => void;
 }
 
-const DiceRoller: React.FC<DiceRollerProps> = ({ isRolling, setIsRolling, totalScore, setTotalScore }) => {
+const DiceRoller: React.FC<DiceRollerProps> = ({ isRolling, setIsRolling, setTotalScore, totalScore, setRollCompleted }) => {
+  const dispatch = useAppDispatch();
   const [diceTransforms, setDiceTransforms] = useState<string[]>([
     "rotateX(0deg) rotateY(0deg)",
     "rotateX(0deg) rotateY(0deg)",
     "rotateX(0deg) rotateY(0deg)",
   ]);
   const [showConfetti, setShowConfetti] = useState(false);
-
 
   useEffect(() => {
     const diceTransforming = (newTransforms: string[]): void => {
@@ -29,7 +32,6 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ isRolling, setIsRolling, totalS
       setDiceTransforms([...newTransforms]);
     };
     const rollDice = () => {
-      setIsRolling(true);
       const newTransforms: string[] = [];
       let newTotal = 0;
 
@@ -67,12 +69,14 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ isRolling, setIsRolling, totalS
         }, 1500);
       }, 3000); // Dừng sau 2 giây
       setTotalScore(newTotal);
+      dispatch(addPointsToWallet(newTotal));
+      setRollCompleted(true);
       setIsRolling(false);
     };
     if (isRolling) {
       rollDice();
     }
-  }, [diceTransforms, isRolling, setIsRolling, setTotalScore]);
+  }, [isRolling]);
 
   return (
     <div className="">
@@ -95,7 +99,9 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ isRolling, setIsRolling, totalS
       <Modal
         title="🎉 Chúc mừng!"
         open={showConfetti}
-        onCancel={() => setShowConfetti(false)}
+        onCancel={() => {
+          setShowConfetti(false)
+        }}
         footer={null}
         className="text-center"
       >
