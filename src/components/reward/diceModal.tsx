@@ -25,7 +25,6 @@ const DiceModal: React.FC<DiceModalProps> = ({ visible, setVisible, onCancel }) 
                 onCancel={onCancel}
                 footer={null}
             >
-                <p>Total score: {totalScore}</p>
                 <div className="my-4">
                 <DiceRoller isRolling={isRolling} setIsRolling={setIsRolling} totalScore={totalScore} setTotalScore={setTotalScore} />
 

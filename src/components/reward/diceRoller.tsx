@@ -66,12 +66,10 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ isRolling, setIsRolling, totalS
           setShowConfetti(true);
         }, 1500);
       }, 3000); // Dừng sau 2 giây
-      console.log(newTotal);
       setTotalScore(newTotal);
       setIsRolling(false);
     };
     if (isRolling) {
-      console.log(isRolling);
       rollDice();
     }
   }, [diceTransforms, isRolling, setIsRolling, setTotalScore]);

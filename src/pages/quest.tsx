@@ -1,75 +1,140 @@
-import React, { useState } from "react";
-import { DatePicker, Table, Checkbox, Button } from "antd";
+import React, { useEffect, useState } from "react";
+import { DatePicker, Table, Checkbox, Button, message } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { GoldFilled } from '@ant-design/icons';
 import DiceModal from "../components/reward/diceModal";
-
-interface Quest {
-  key: string;
-  index: number;
-  target: string;
-  description: string;
-  completed: boolean;
-  points: number;
-}
+import { deleteQuest, fetchQuests } from "../services/questService";
+import { DataResponse } from "../payloads/response/dataResponse";
+import { IQuest } from "../models/Quest";
+import QuestModal from "../components/quest/questModal";
+import { useAppSelector } from "../redux/reduxHook";
+import { IUserProfile } from "../models/user";
+import { useNavigate } from "react-router-dom";
 
 interface QuestColumns {
   title: string;
   dataIndex?: string;
   key: string;
-  render?: (_: unknown, record: Quest) => React.ReactNode;
+  render?: (record: IQuest) => React.ReactNode;
 }
 
 function QuestPage() {
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [diceModalVisible, setDiceModalVisible] = useState<boolean>(false);
-  const [quests, setQuests] = useState<Quest[]>([
-    {
-      key: "1",
-      index: 1,
-      target: "Thu thập 10 quả táo",
-      description: "Đi đến khu rừng phía bắc và thu thập táo.",
-      completed: false,
-      points: 10,
-    },
-    {
-      key: "2",
-      index: 2,
-      target: "Đánh bại 5 quái vật nhỏ",
-      description: "Tiêu diệt quái vật trong khu vực đồng cỏ.",
-      completed: false,
-      points: 15,
-    },
+  const [quests, setQuests] = useState<IQuest[]>([]);
 
-  ]);
+  // Quest cần sửa (nếu có)
+  const [editingQuest, setEditingQuest] = useState<IQuest | undefined>(undefined); // Quest cần sửa
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const user = useAppSelector<IUserProfile | null>((state) => state.auth.user);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user && !loading) {
+      navigate("/");
+    }
+  }, [user, navigate, loading]);
+
 
   const totalCoins = quests.reduce(
-    (sum, quest) => (quest.completed ? sum + quest.points : sum),
+    (sum, quest) => (quest.isDone ? sum + quest.points : sum),
     0
   );
 
   const handleCheckboxChange = (key: string) => {
     setQuests((prevQuests) =>
       prevQuests.map((quest) =>
-        quest.key === key ? { ...quest, completed: !quest.completed } : quest
+        quest.key === key ? { ...quest, completed: !quest.isDone } : quest
       )
     );
   };
 
-  const handleRollDice = (record: Quest) => {
+  const handleRollDice = (record: IQuest) => {
     console.log(record);
     setDiceModalVisible(true);
   }
+
+  const handleEditQuest = (quest: IQuest) => {
+    setEditingQuest(quest);
+    setModalVisible(true);
+  };
+
+  const handleDeleteQuest = async (quest: IQuest) => {
+    try {
+      const response = await deleteQuest(quest);
+      if (response.respCode === '000') {
+        setQuests((prevQuests) => prevQuests.filter((q) => q.key !== quest.key));
+        message.success("Delete quest successfully!")
+      } else {
+        message.error("Delete quest fail!")
+      }
+    }
+    catch  (error) {
+      message.error("Delete quest fail!")
+      console.log("Failed to delete quest" + error);
+    }
+  };
+
+  const handleAddNewQuest = () => {
+    setEditingQuest(undefined);
+    setModalVisible(true);
+  };
+
+  const handleSaveQuest = (quest: IQuest) => {
+    if (editingQuest) {
+      setQuests((prevQuests) =>
+        prevQuests.map((q) => (q.key === quest.key ? quest : q))
+      );
+    } else {
+      setQuests((prevQuests) => [...prevQuests, quest]);
+    }
+    setModalVisible(false);
+  };
 
   const changeDate = (date: Dayjs | null) => {
     setSelectedDate(date ? date : selectedDate);
   };
 
+  useEffect(() => {
+    if (user) {
+      const fetchData = async (): Promise<void> => {
+        setLoading(true)
+        const response: DataResponse<IQuest> = await fetchQuests(selectedDate);
+        if (response.respCode === "000") {
+          try {
+            const quests: IQuest[] = Array.isArray(response.data) ? response.data : [];
+            setQuests(quests);
+          } catch (error) {
+            console.error("Error parsing quests data", error);
+          }
+        } else {
+          console.log("Failed to fetch quests");
+        }
+      };
+      try {
+        fetchData();
+      } catch (error) {
+        console.log("Failed to fetch quests" + error);
+      }
+      finally {
+        setLoading(false)
+      }
+    }
+  }, [selectedDate, user]);
+
+
+
   const columns: QuestColumns[] = [
     {
-      title: "STT",
-      dataIndex: "index",
-      key: "index",
+      title: "Hoàn thành",
+      key: "completed",
+      render: (record: IQuest) => (
+        <Checkbox
+          checked={record.isDone}
+          onChange={() => handleCheckboxChange(record.key)}
+        />
+      ),
     },
     {
       title: "Mục tiêu",
@@ -86,27 +151,32 @@ function QuestPage() {
       dataIndex: "points",
       key: "points",
     },
-    {
-      title: "Hoàn thành",
-      key: "completed",
-      render: (_, record: Quest) => (
-        <Checkbox
-          checked={record.completed}
-          onChange={() => handleCheckboxChange(record.key)}
-        />
-      ),
-    },
+
     {
       title: "Roll Dice",
       key: "roll dice",
-      render: (_, record: Quest) => (
-        <Button
-          onClick={() => { handleRollDice(record) }}
-        >
+      render: (record: IQuest) => (
+        <Button onClick={() => handleRollDice(record)}>
           Roll Dice
         </Button>
-      )
-    }
+      ),
+    },
+    {
+      title: "Action",
+      key: "edit",
+      render: (record: IQuest) => (
+        <>
+          <Button onClick={() => handleEditQuest(record)} type="link">
+            Sửa
+          </Button>
+          <Button danger onClick={() => handleDeleteQuest(record)} type="link">
+            Xoá
+          </Button>
+        </>
+
+      ),
+    },
+
   ];
 
   return (
@@ -129,7 +199,7 @@ function QuestPage() {
 
       <div className="flex mb-6">
         {/* Ảnh GIF bên trái */}
-        <div className="w-1/3 pr-4">
+        <div className="flex-1 pr-4">
 
           <img
             src="https://media.giphy.com/media/l0ExdMHUDKteztyfe/giphy.gif"
@@ -138,20 +208,37 @@ function QuestPage() {
           />
         </div>
 
-        <div className="flex-1">
+        <div className="w-2/3">
           <div className="bg-white rounded-lg shadow-lg p-4">
             <Table
+              loading={loading}
               columns={columns}
               dataSource={quests}
               pagination={false}
-              className="ant-table-rounded"
+              className="ant-table-rounded w-"
               scroll={{ y: 360 }}
+              footer={() => (
+                <div className="flex justify-end">
+                  <Button type="primary" onClick={() => handleAddNewQuest()}>
+                    Thêm mới Quest
+                  </Button>
+                </div>
+              )}
             />
           </div>
         </div>
       </div>
 
       <DiceModal visible={diceModalVisible} setVisible={setDiceModalVisible} onCancel={() => setDiceModalVisible(false)} />
+      {/* Modal để thêm hoặc sửa quest */}
+      <QuestModal
+        visible={modalVisible}
+        onCancel={() => setModalVisible(false)}
+        onSave={handleSaveQuest}
+        editingQuest={editingQuest}
+        selectedDate={selectedDate}
+      />
+
     </div>
   );
 }

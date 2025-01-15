@@ -1,5 +1,5 @@
-export interface DataResponse {
+export interface DataResponse<T> {
     respCode: string;
     respDesc: string;
-    data: string;
+    data: T;
 }

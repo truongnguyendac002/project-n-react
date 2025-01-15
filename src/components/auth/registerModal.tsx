@@ -3,6 +3,7 @@ import { Modal, Form, Input, Button, message } from "antd";
 import { RegisterRequest } from "../../payloads/request/registerRequest";
 import { DataResponse } from "../../payloads/response/dataResponse";
 import { register } from "../../services/authService";
+import { IUserProfile } from "../../models/user";
 
 interface RegisterModalProps {
     visible: boolean;
@@ -16,13 +17,13 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ visible, setVisible, onCa
     const handleRegister = async (values: RegisterRequest) => {
         try {
             setLoading(true);
-            const response: DataResponse = await register(values);
+            const response: DataResponse<IUserProfile> = await register(values);
             if (response.respCode === "000") {
                 message.success("Register successfully");
                 setVisible(false);
             }
             else {
-                message.error(response.data);
+                message.error(response.respDesc);
             }
         }
         catch (error) {

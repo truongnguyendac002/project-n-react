@@ -40,7 +40,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ visible, setVisible, onCancel }
     const handleLogin = async (values: LoginRequest) => {
         try {
             setLoading(true);
-            const response: DataResponse = await login(values);
+            const response: DataResponse<string> = await login(values);
             if (response.respCode === "000") {
                 message.success("Login successfully");
                 setVisible(false);
@@ -51,6 +51,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ visible, setVisible, onCancel }
             }
         }
         catch (error) {
+            message.error("Login failed. Please try again.");
             console.log("Login failed. Please try again." + error);
         }
         finally {

@@ -1,10 +1,11 @@
 
+import { IUserProfile } from '../models/user';
 import { LoginRequest } from '../payloads/request/loginRequest';
 import { RegisterRequest } from '../payloads/request/registerRequest';
 import { DataResponse } from '../payloads/response/dataResponse';
 import axiosInstance from '../ultils/axiosInstance';
 
-export const login = async (loginRequest: LoginRequest): Promise<DataResponse> => {
+export const login = async (loginRequest: LoginRequest): Promise<DataResponse<string>> => {
   try {
     const response = await axiosInstance.post('/auth/login', loginRequest);
     const data = response.data;
@@ -18,7 +19,7 @@ export const login = async (loginRequest: LoginRequest): Promise<DataResponse> =
   }
 };
 
-export const register = async (registerRequest: RegisterRequest): Promise<DataResponse> => {
+export const register = async (registerRequest: RegisterRequest): Promise<DataResponse<IUserProfile>> => {
   try {
     const response = await axiosInstance.post('/auth/register', registerRequest);
     const data = response.data;
@@ -28,7 +29,7 @@ export const register = async (registerRequest: RegisterRequest): Promise<DataRe
   }
 }
 
-export const fetchUserInfo = async (): Promise<DataResponse> => {
+export const fetchUserInfo = async (): Promise<DataResponse<IUserProfile>> => {
   try {
     const response = await axiosInstance.get('/auth/info');
     return response.data;
