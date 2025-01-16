@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { DatePicker, Table, Checkbox, Button, message } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { GoldFilled } from "@ant-design/icons";
-import DiceModal from "../components/reward/diceModal";
+import DiceModal from "../components/dice/diceModal";
 import { deleteQuest, fetchQuests } from "../services/questService";
 import { DataResponse } from "../payloads/response/dataResponse";
 import { IQuest } from "../models/Quest";
@@ -97,7 +97,7 @@ function QuestPage() {
 
   useEffect(() => {
     if (user) {
-      const fetchData = async (): Promise<void> => {
+      const fetchData = async () => {
         setLoading(true);
         const response: DataResponse<IQuest> = await fetchQuests(selectedDate);
         if (response.respCode === "000") {
