@@ -9,6 +9,7 @@ import { DataResponse } from "../payloads/response/dataResponse";
 import RewardModal from "../components/reward/dailyRewardModal";
 import { getTotalPointsAtDate } from "../services/diceRollService";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 
 function RewardPage() {
@@ -20,6 +21,14 @@ function RewardPage() {
   const [rewardModalVisible, setRewardModalVisible] = useState<boolean>(false);
   const [editingReward, setEditingReward] = useState<IReward | null>(null);
   const [totalPointsToday, setTotalPointsToday] = useState<number>(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user && !loading) {
+      navigate("/");
+    }
+  }, [user, navigate, loading]);
+
   useEffect(() => {
     const fetchRewards = async () => {
       try {
@@ -51,24 +60,25 @@ function RewardPage() {
 
   useEffect(() => {
     const fetchTotalPointsToday = async () => {
+      setLoadingArchive(true);
       const response = await getTotalPointsAtDate(dayjs());
       if (response.respCode === '000') {
-        console.log("alo", response);
         setTotalPointsToday(response.data);
       }
       else
-        message.error(response.respCode as string);
+        message.error(response.respDesc as string);
     };
-    try {
-      setLoadingArchive(true);
-      fetchTotalPointsToday();
-    } catch (error) {
-      console.error(error)
+    if (user) {
+      try {
+        fetchTotalPointsToday();
+      } catch (error) {
+        console.error(error)
+      }
+      finally {
+        setLoadingArchive(false);
+      }
     }
-    finally {
-      setLoadingArchive(false);
-    }
-  }, []);
+  }, [user]);
 
   const columns = [
     {
@@ -163,7 +173,7 @@ function RewardPage() {
       {/* Tổng coin đã kiếm được */}
       <div className="flex justify-between items-center mb-6">
         <div className="text-lg font-bold text-gray-700">
-          Total coins earned today: <span className="text-blue-600">{totalPointsToday}</span>
+          Daily coins: <span className="text-blue-600">{totalPointsToday}</span>
           <GoldFilled className="inline-block text-yellow-500 ml-2" />
         </div>
       </div>

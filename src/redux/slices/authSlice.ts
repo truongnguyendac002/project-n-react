@@ -25,10 +25,15 @@ export const authSlice = createSlice({
             if (state.user) {
                 state.user.wallet += action.payload;
             }
+        },
+        purchaseItem: (state, action) => {
+            if (state.user) {
+                state.user.wallet -= action.payload.price;
+            }
         }
     },
 });
 
-export const { setUserProfile, getUserProfile, removeUserProfile,addPointsToWallet } = authSlice.actions;
+export const { setUserProfile, getUserProfile, removeUserProfile,addPointsToWallet,purchaseItem } = authSlice.actions;
 export default authSlice.reducer;
 

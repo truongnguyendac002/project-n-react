@@ -6,13 +6,12 @@ import { Dayjs } from "dayjs";
 import { QuestRequest } from "../../payloads/request/questRequest";
 import { createQuest, updateQuest } from "../../services/questService";
 
-
 interface QuestModalProps {
     visible: boolean;
     onCancel: () => void;
     onSave: (quest: IQuest) => void;
     selectedDate: Dayjs;
-    editingQuest?: IQuest; // Quest cần sửa (nếu có)
+    editingQuest?: IQuest;
 }
 
 const QuestModal: React.FC<QuestModalProps> = ({ visible, onCancel, onSave, selectedDate, editingQuest }) => {

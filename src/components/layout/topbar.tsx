@@ -1,12 +1,11 @@
 import { Avatar, Dropdown, Button } from "antd";
 import { LogoutOutlined, EditOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoginModal from "../auth/loginModal";
 import { useAppDispatch, useAppSelector } from "../../redux/reduxHook";
 import { IUserProfile } from "../../models/User";
 import { removeUserProfile } from "../../redux/slices/authSlice";
-
 
 const menuItems: MenuProps["items"] = [
     {
@@ -24,8 +23,31 @@ const menuItems: MenuProps["items"] = [
 
 function TopBar() {
     const [loginModalVisible, setLoginModalVisible] = useState(false);
+    const [currentTime, setCurrentTime] = useState<string>("");
     const dispatch = useAppDispatch();
     const user = useAppSelector<IUserProfile | null>((state) => state.auth.user);
+
+    useEffect(() => {
+        const updateDateTime = () => {
+            const now = new Date();
+            const options: Intl.DateTimeFormatOptions = {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+            };
+            setCurrentTime(now.toLocaleString("en-US", options));
+        };
+
+        // Cập nhật ngày giờ mỗi giây
+        updateDateTime();
+        const interval = setInterval(updateDateTime, 1000);
+
+        return () => clearInterval(interval); // Clear interval khi component bị unmount
+    }, []);
 
     const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
         if (key === "edit") {
@@ -37,14 +59,14 @@ function TopBar() {
 
     return (
         <div className="flex justify-between items-center p-4 bg-white shadow-md rounded-t-xl">
-            <div className="text-2xl font-bold text-gray-700">Sunday, 26th Feb 2023</div>
+            <div className="text-lg font-bold text-gray-700">{currentTime}</div>
             <div className="flex items-center gap-4">
                 <input
                     type="text"
                     placeholder="Search"
                     className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 border-none focus:outline-none shadow-sm"
                 />
-                { user ? (
+                {user ? (
                     <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }} trigger={["click"]} placement="bottomRight">
                         <div className="flex items-center gap-2 cursor-pointer">
                             <Avatar
