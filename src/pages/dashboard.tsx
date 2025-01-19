@@ -41,11 +41,6 @@ const Dashboard = () => {
                 </Card>
             </div>
 
-            <div className="mt-12 text-center">
-                <Button type="primary" size="large" className="bg-blue-600 text-white hover:bg-blue-700">
-                    Bắt Đầu Ngay
-                </Button>
-            </div>
         </div>
     );
 };
