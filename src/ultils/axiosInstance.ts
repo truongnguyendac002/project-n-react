@@ -1,6 +1,6 @@
 import axios from 'axios';
 // import { DataResponse } from '../payloads/response/dataResponse';
-const backendURL = "http://localhost:8080/api";
+const backendURL = "https://nghienhoc-a9bccsdzhhgca0fj.southeastasia-01.azurewebsites.net/api";
 
 const axiosInstance = axios.create({
   baseURL: backendURL, 
