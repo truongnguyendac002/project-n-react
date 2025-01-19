@@ -1,59 +1,53 @@
+import { Typography, Card, Button } from "antd";
+import { PlusOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { BsFillDice3Fill } from "react-icons/bs";
 
-function Dashboard() {
+const { Title, Text } = Typography;
+
+const Dashboard = () => {
     return (
-        <>
-            <div className="grid grid-cols-4 gap-6 mr-4 ">
-                {/* Column */}
-                <div className="bg-yellow-200 rounded-xl p-4 shadow-md">
-                    <h2 className="text-lg font-bold mb-4 text-yellow-800">Backlog</h2>
-                    <div className="space-y-2">
-                        <div className="p-4 bg-yellow-300 rounded-lg shadow-sm">
-                            Database Setup
-                        </div>
-                        <div className="p-4 bg-yellow-300 rounded-lg shadow-sm">
-                            Firebase Integration
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-blue-200 rounded-xl p-4 shadow-md">
-                    <h2 className="text-lg font-bold mb-4 text-blue-800">To Do</h2>
-                    <div className="space-y-2">
-                        <div className="p-4 bg-blue-300 rounded-lg shadow-sm">
-                            Data Table Page
-                        </div>
-                        <div className="p-4 bg-blue-300 rounded-lg shadow-sm">
-                            Server Side Pagination
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-pink-200 rounded-xl p-4 shadow-md">
-                    <h2 className="text-lg font-bold mb-4 text-pink-800">Doing</h2>
-                    <div className="space-y-2">
-                        <div className="p-4 bg-pink-300 rounded-lg shadow-sm">
-                            Full Calendar Extension
-                        </div>
-                        <div className="p-4 bg-pink-300 rounded-lg shadow-sm">
-                            Custom Kanban Board
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-green-200 rounded-xl p-4 shadow-md">
-                    <h2 className="text-lg font-bold mb-4 text-green-800">Completed</h2>
-                    <div className="space-y-2">
-                        <div className="p-4 bg-green-300 rounded-lg shadow-sm">
-                            Vite Server Setup
-                        </div>
-                        <div className="p-4 bg-green-300 rounded-lg shadow-sm">
-                            Make New Login Page
-                        </div>
-                    </div>
-                </div>
+        <div className="flex flex-col items-center py-12 px-12">
+            <div className="text-center mb-12">
+                <Title level={1} className="text-blue-600">DailyGoal 🔥</Title>
+                <Text className="text-lg text-gray-600">Quản lý mục tiêu hàng ngày của bạn !</Text>
             </div>
-        </>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Card 1: Thêm mục tiêu */}
+                <Card className="bg-white shadow-lg rounded-lg p-6" hoverable>
+                    <div className="flex items-center justify-center mb-4">
+                        <Button shape="circle" icon={<PlusOutlined />} className="bg-blue-500 text-white" size="large" />
+                    </div>
+                    <Title level={4}>Đặt Mục Tiêu</Title>
+                    <Text className="text-gray-600">Cập nhật và theo dõi các mục tiêu mỗi ngày để tiến gần hơn đến thành công!</Text>
+                </Card>
+
+                {/* Card 2: Lăn xúc xắc */}
+                <Card className="bg-white shadow-lg rounded-lg p-6" hoverable>
+                    <div className="flex items-center justify-center mb-4">
+                        <Button shape="circle" icon={<BsFillDice3Fill />} className="bg-green-500 text-white" size="large" />
+                    </div>
+                    <Title level={4}>Lăn Xúc Xắc</Title>
+                    <Text className="text-gray-600">Khi hoàn thành mục tiêu, bạn sẽ lăn xúc xắc để nhận thưởng điểm! Điểm này giúp bạn đạt được các phần quà hấp dẫn, do bạn tự đặt ra 🤣</Text>
+                </Card>
+
+                {/* Card 3: Mua phần quà */}
+                <Card className="bg-white shadow-lg rounded-lg p-6" hoverable>
+                    <div className="flex items-center justify-center mb-4">
+                        <Button shape="circle" icon={<ShoppingCartOutlined />} className="bg-red-500 text-white" size="large" />
+                    </div>
+                    <Title level={4}>Mua Phần Quà</Title>
+                    <Text className="text-gray-600">Dùng điểm tích lũy để mua những phần quà mà bạn mong muốn!</Text>
+                </Card>
+            </div>
+
+            <div className="mt-12 text-center">
+                <Button type="primary" size="large" className="bg-blue-600 text-white hover:bg-blue-700">
+                    Bắt Đầu Ngay
+                </Button>
+            </div>
+        </div>
     );
-}
+};
 
 export default Dashboard;
