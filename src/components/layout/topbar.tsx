@@ -28,23 +28,19 @@ function TopBar() {
     const user = useAppSelector<IUserProfile | null>((state) => state.auth.user);
 
     useEffect(() => {
-        const updateDateTime = () => {
+        const updateDate = () => {
             const now = new Date();
             const options: Intl.DateTimeFormatOptions = {
                 weekday: "long",
                 year: "numeric",
                 month: "long",
                 day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
             };
-            setCurrentTime(now.toLocaleString("en-US", options));
+            setCurrentTime(now.toLocaleDateString("en-US", options)); // Chỉ lấy ngày
         };
 
-        // Cập nhật ngày giờ mỗi giây
-        updateDateTime();
-        const interval = setInterval(updateDateTime, 1000);
+        updateDate(); // Cập nhật ngày khi component render lần đầu
+        const interval = setInterval(updateDate, 24 * 60 * 60 * 1000); // Cập nhật ngày mỗi 24 giờ
 
         return () => clearInterval(interval); // Clear interval khi component bị unmount
     }, []);
