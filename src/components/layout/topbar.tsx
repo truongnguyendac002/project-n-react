@@ -67,7 +67,7 @@ function TopBar() {
                         <div className="flex items-center gap-2 cursor-pointer">
                             <Avatar
                                 size={40}
-                                src={user.profileImg || "https://images.pexels.com/photos/1526814/pexels-photo-1526814.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"}
+                                src={user.profile_img || "https://images.pexels.com/photos/1526814/pexels-photo-1526814.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"}
                                 className="object-cover"
                             />
                             <div>
