@@ -3,7 +3,7 @@ export interface IUserProfile {
     name: string;
     role: string;
     email: string;
-    profileImg: string;
+    profile_img: string;
     status: string;
     wallet: number;
 }
