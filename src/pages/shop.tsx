@@ -164,10 +164,12 @@ function ShopPage() {
   }
 
   return (
-    <div className="pl-6 pr-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-full">
-      <div className="grid grid-cols-5 gap-6 mb-4">
-        <div className="flex flex-col pr-4 col-span-1">
-          <div className="text-lg font-bold text-gray-700 mb-4">
+    <div className="px-4 sm:px-6 bg-white min-h-full">
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 sm:gap-6 mb-4">
+        
+        {/* Cột bên trái: Bộ lọc */}
+        <div className="flex flex-col sm:pr-4 col-span-1">
+          <div className="text-base sm:text-lg font-bold text-gray-700 mb-4">
             Total coins: <span className="text-blue-600">{user?.wallet}</span>
             <GoldFilled className="inline-block text-yellow-500 ml-2" />
           </div>
@@ -175,16 +177,15 @@ function ShopPage() {
             placeholder="Search by name"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="mr-4 w-full mb-4"
+            className="w-full mb-4"
           />
-
-          <div className="flex mb-4">
+          <div className="flex mb-4 space-x-2">
             <Input
               type="number"
               placeholder="Min Price"
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
-              className="mr-2 w-1/2"
+              className="w-1/2"
             />
             <Input
               type="number"
@@ -194,9 +195,6 @@ function ShopPage() {
               className="w-1/2"
             />
           </div>
-
-
-          {/* Phân trang */}
           <Pagination
             current={currentPage}
             total={filteredItems.length}
@@ -205,28 +203,31 @@ function ShopPage() {
             className="mt-6"
           />
         </div>
-
+  
         {/* Cột bên phải: Vật phẩm */}
-        <div className="col-span-4">
+        <div className="col-span-1 sm:col-span-4">
           <Card
-            loading={(loading && !initDone)}
-            title="Default size card" extra={
+            loading={loading && !initDone}
+            title="Shop Items"
+            extra={
               <>
                 <Tooltip title="New item">
-                  <button onClick={handleAddNewShopItem} className='mr-4' ><PlusOutlined /></button>
+                  <button onClick={handleAddNewShopItem} className="mr-4">
+                    <PlusOutlined />
+                  </button>
                 </Tooltip>
                 <Tooltip title="Edit item">
                   <Switch
                     checkedChildren={<EditOutlined />}
-                    unCheckedChildren={<MdOutlineEditOff className='mt-1' />}
+                    unCheckedChildren={<MdOutlineEditOff className="mt-1" />}
                     onClick={() => setEditting(!editting)}
                   />
                 </Tooltip>
-
-              </>}
+              </>
+            }
           >
             {displayedItems.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {displayedItems.map((item) => (
                   <motion.div
                     key={item.id}
@@ -240,113 +241,88 @@ function ShopPage() {
                         <div className="relative">
                           <img
                             alt={item.name}
-                            src={item.imageUrl ? item.imageUrl : "https://www.minteventrentals.com/templates/mint/images/noproductfound.png"}
-                            className="h-32 w-full object-cover rounded-lg"
+                            src={item.imageUrl || "https://www.minteventrentals.com/templates/mint/images/noproductfound.png"}
+                            className="h-40 sm:h-32 w-full object-cover rounded-lg"
                           />
                           {item.status === ShopItemStatus.SOLD_OUT && (
                             <div className="absolute inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center rounded-lg">
-                              <p className="text-white text-xl font-bold">SOLD OUT</p>
+                              <p className="text-white text-lg sm:text-xl font-bold">SOLD OUT</p>
                             </div>
                           )}
                         </div>
                       }
                       className="bg-white shadow-lg rounded-lg"
-                      actions={editting ? [
-                        <Tooltip
-                          title={item.status === ShopItemStatus.SOLD_OUT ? "Cannot edit sold items" : "Edit image"}
-                        >
-                          <span>
-                            <Upload
-                              showUploadList={false}
-                              disabled={item.status === ShopItemStatus.SOLD_OUT}
-                              beforeUpload={(file) => {
-                                handlePicture(file, item);
-                                return false;
-                              }}
-                            >
-                              {loadingFile ? (
-                                <Spin
-                                  indicator={
-                                    <LoadingOutlined spin />
-                                  }
+                      actions={
+                        editting
+                          ? [
+                              <Tooltip title={item.status === ShopItemStatus.SOLD_OUT ? "Cannot edit sold items" : "Edit image"}>
+                                <Upload
+                                  showUploadList={false}
+                                  disabled={item.status === ShopItemStatus.SOLD_OUT}
+                                  beforeUpload={(file) => {
+                                    handlePicture(file, item);
+                                    return false;
+                                  }}
+                                >
+                                  {loadingFile ? <Spin indicator={<LoadingOutlined spin />} /> : <PictureOutlined className={item.status === ShopItemStatus.SOLD_OUT ? "text-gray-400 cursor-not-allowed" : ""} />}
+                                </Upload>
+                              </Tooltip>,
+                              <Tooltip title={item.status === ShopItemStatus.SOLD_OUT ? "Cannot edit sold items" : ""}>
+                                <EditOutlined
+                                  key="edit"
+                                  onClick={() => {
+                                    if (item.status !== ShopItemStatus.SOLD_OUT) handleEditShopItem(item);
+                                  }}
+                                  className={item.status === ShopItemStatus.SOLD_OUT ? "text-gray-400 cursor-not-allowed" : ""}
                                 />
-                              ) : (
-                                <PictureOutlined className={item.status === ShopItemStatus.SOLD_OUT ? "text-gray-400 cursor-not-allowed" : ""}
+                              </Tooltip>,
+                              <Tooltip title={item.status === ShopItemStatus.SOLD_OUT ? "Cannot delete sold items" : ""}>
+                                <DeleteOutlined
+                                  key="delete"
+                                  onClick={() => {
+                                    if (item.status !== ShopItemStatus.SOLD_OUT) handleDeleteShopItem(item);
+                                  }}
+                                  className={item.status === ShopItemStatus.SOLD_OUT ? "text-gray-400 cursor-not-allowed" : "text-red-500 hover:text-red-600"}
                                 />
-                              )}
-                            </Upload>
-                          </span>
-                        </Tooltip>,
-                        <Tooltip
-                          title={item.status === ShopItemStatus.SOLD_OUT ? "Cannot edit sold items" : ""}
-                        >
-                          <span>
-                            <EditOutlined
-                              key="edit"
-                              onClick={() => {
-                                if (item.status !== ShopItemStatus.SOLD_OUT) handleEditShopItem(item);
-                              }}
-                              className={item.status === ShopItemStatus.SOLD_OUT ? "text-gray-400 cursor-not-allowed" : ""}
-                            />
-                          </span>
-                        </Tooltip>,
-                        <Tooltip
-                          title={item.status === ShopItemStatus.SOLD_OUT ? "Cannot delete sold items" : ""}
-                        >
-                          <span>
-                            <DeleteOutlined
-                              key="delete"
-                              onClick={() => {
-                                if (item.status !== ShopItemStatus.SOLD_OUT) handleDeleteShopItem(item);
-                              }}
-                              className={item.status === ShopItemStatus.SOLD_OUT ? "text-gray-400 cursor-not-allowed" : "text-red-500 hover:text-red-600"}
-                            />
-                          </span>
-                        </Tooltip>,
-                      ] : []}
+                              </Tooltip>,
+                            ]
+                          : []
+                      }
                     >
-                      <h3 className="text-xl font-semibold text-gray-800 truncate">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 mt-2 truncate">
-                        {item.description}
-                      </p>
+                      <h3 className="text-lg sm:text-xl font-semibold text-gray-800 truncate">{item.name}</h3>
+                      <p className="text-sm text-gray-600 mt-2 truncate">{item.description}</p>
                       <div className="flex justify-between items-center mt-4">
-                        <div className="text-lg w-4/5 font-semibold text-blue-600">
+                        <div className="text-base sm:text-lg w-4/5 font-semibold text-blue-600">
                           Price: {item.price} coins
                         </div>
                         <Button
                           type="primary"
                           className="flex-1"
                           onClick={() => handleBuyItem(item)}
-                          disabled={user?.wallet as number < item.price || item.status === ShopItemStatus.SOLD_OUT}
+                          disabled={(user?.wallet ?? 0) < item.price || item.status === ShopItemStatus.SOLD_OUT}
                         >
                           {item.status === ShopItemStatus.SOLD_OUT ? "Sold Out" : "Buy"}
                         </Button>
                       </div>
                     </Card>
                   </motion.div>
-
                 ))}
-              </div>)
-              : (
-                <div className="flex flex-col items-center justify-center py-10">
-                  <Empty description={<span>No items available in the shop</span>} />
-                  <Button type="primary" className="mt-4" onClick={handleAddNewShopItem}>
-                    Add New Item
-                  </Button>
-                </div>
-              )
-            }
-
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10">
+                <Empty description={<span>No items available in the shop</span>} />
+                <Button type="primary" className="mt-4" onClick={handleAddNewShopItem}>
+                  Add New Item
+                </Button>
+              </div>
+            )}
           </Card>
-
         </div>
       </div>
-
+  
       <ShopItemModal visible={shopItemModalVisible} onCancel={() => setShopItemModalVisible(false)} onSave={handleSaveShopItem} editingItem={editingItem} />
     </div>
   );
-}
+  }
 
 export default ShopPage;
