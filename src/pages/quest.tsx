@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { DatePicker, Table, Checkbox, Button, message } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import { GoldFilled } from "@ant-design/icons";
 import DiceModal from "../components/dice/diceModal";
 import { deleteQuest, fetchQuests } from "../services/questService";
 import { DataResponse } from "../payloads/response/dataResponse";
@@ -10,9 +9,18 @@ import QuestModal from "../components/quest/questModal";
 import { useAppSelector } from "../redux/reduxHook";
 import { IUserProfile } from "../models/User";
 import { useNavigate } from "react-router-dom";
+import {
+  CheckCircleOutlined,
+  AimOutlined,
+  FileTextOutlined,
+  StarOutlined,
+  PlayCircleOutlined,
+  EllipsisOutlined,
+  GoldFilled
+} from "@ant-design/icons";
 
 interface QuestColumns {
-  title: string;
+  title: ReactNode;
   dataIndex?: string;
   key: string;
   render?: (record: IQuest) => React.ReactNode;
@@ -130,7 +138,7 @@ function QuestPage() {
 
   const columns: QuestColumns[] = [
     {
-      title: "Hoàn thành",
+      title: <div className="flex justify-center"><CheckCircleOutlined className="text-lg" /></div>,
       key: "completed",
       render: (record: IQuest) => (
         <Checkbox
@@ -140,71 +148,82 @@ function QuestPage() {
       ),
     },
     {
-      title: "Mục tiêu",
+      title: <div className="flex justify-center"><AimOutlined className="text-lg" /></div>,
       dataIndex: "target",
       key: "target",
     },
     {
-      title: "Mô tả",
+      title: <div className="flex justify-center"><FileTextOutlined className="text-lg" /></div>,
       dataIndex: "description",
       key: "description",
     },
     {
-      title: "Điểm",
+      title: <div className="flex justify-center"><StarOutlined className="text-lg" /></div>,
       dataIndex: "points",
       key: "points",
     },
     {
-      title: "Roll Dice",
+      title: <div className="flex justify-center"><PlayCircleOutlined className="text-lg" /></div>,
       key: "roll dice",
       render: (record: IQuest) => (
-        <Button disabled={record.isDone} onClick={() => handleRollDice(record)}>
+        <Button
+          disabled={record.isDone}
+          onClick={() => handleRollDice(record)}
+          type="primary"
+          className="w-full sm:w-auto"
+        >
           Roll Dice
         </Button>
       ),
     },
     {
-      title: "Action",
+      title: <div className="flex justify-center"><EllipsisOutlined className="text-lg" /></div>,
       key: "edit",
       render: (record: IQuest) => (
-        <>
-          <Button onClick={() => handleEditQuest(record)} type="link">
+        <div className="flex justify-center space-x-2">
+          <Button onClick={() => handleEditQuest(record)} type="link" className="text-blue-600">
             Sửa
           </Button>
           {!record.isDone && (
-            <Button danger onClick={() => handleDeleteQuest(record)} type="link">
+            <Button danger onClick={() => handleDeleteQuest(record)} type="link" className="text-red-600">
               Xoá
             </Button>
           )}
-        </>
+        </div>
       ),
     },
   ];
-
+  
   return (
-    <div className="pl-6 pr-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-full">
-      <div className="flex justify-between items-center mb-6">
-        <div className="text-lg font-bold text-gray-700">
+    <div className="px-4 md:px-6 bg-white min-h-screen">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div className="text-lg font-bold text-gray-700 flex items-center gap-2">
           Daily coins: <span className="text-blue-600">{totalCoins}</span>
-          <GoldFilled className="inline-block text-yellow-500 ml-2" />
+          <GoldFilled className="text-yellow-500" />
         </div>
         <DatePicker
           defaultValue={selectedDate}
           onChange={changeDate}
-          className="w-60"
+          className="w-full md:w-60"
           format={"DD/MM/YYYY"}
         />
       </div>
-      <div className="flex mb-6">
-        <div className="flex-1 pr-4">
+  
+      {/* Content */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Hình ảnh */}
+        <div className="md:col-span-1 flex justify-center">
           <img
             src="https://media.giphy.com/media/l0ExdMHUDKteztyfe/giphy.gif"
             alt="Capybara Fighting Monsters"
-            className="w-full rounded-lg shadow-lg"
+            className="w-full max-w-sm md:max-w-full rounded-lg shadow-lg"
           />
         </div>
-        <div className="w-2/3">
-          <div className="bg-white rounded-lg shadow-lg p-4">
+  
+        {/* Bảng danh sách quest */}
+        <div className="md:col-span-2">
+          <div className="bg-white rounded-lg shadow-lg p-4 md:pr-4">
             <Table
               loading={loading}
               columns={columns}
@@ -214,7 +233,7 @@ function QuestPage() {
               scroll={{ y: 360 }}
               footer={() => (
                 <div className="flex justify-end">
-                  <Button type="primary" onClick={() => handleAddNewQuest()}>
+                  <Button type="primary" onClick={handleAddNewQuest}>
                     Thêm mới Quest
                   </Button>
                 </div>
@@ -223,6 +242,8 @@ function QuestPage() {
           </div>
         </div>
       </div>
+  
+      {/* Modals */}
       <DiceModal
         quest={rollQuest}
         visible={diceModalVisible}
@@ -238,6 +259,7 @@ function QuestPage() {
       />
     </div>
   );
+  
 }
 
 export default QuestPage;

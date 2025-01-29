@@ -135,73 +135,69 @@ const RewardModal: React.FC<rewardModalProps> = ({ visible, onCancel, onSave, ed
         <Modal
             title={editingReward ? "Sửa phần thưởng" : "Thêm phần thưởng"}
             open={visible}
-
             onOk={handleSave}
             onCancel={handleCancel}
+            destroyOnClose
         >
-            <Form
-                form={form}
-                layout="vertical"
-                name="rewardForm"
-                className="space-y-4"
-            >
-
-                <div className="flex space-x-4">
+            <Form form={form} layout="vertical" name="rewardForm">
+                <div className="flex flex-col md:flex-row gap-6">
+                    {/* Khu vực ảnh */}
                     {editingReward && (
-                        <Form.Item
-                            name="image"
-                            label="Hình ảnh"
-                            className="w-1/4 "
-                        >
-                            <div className=" flex flex-wrap gap-4">
-                                {editingReward?.imageUrl ?
-                                    <div>
-                                        <Image
-                                            src={editingReward.imageUrl}
-                                            alt="reward"
-                                            className="w-full h-full object-cover rounded-md border"
-                                        />
-                                        <button
-                                            onClick={() => handleRemoveImage(editingReward?.id as UUID)}
-                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                                        >
-                                            {loadingFile ? (
-                                                <Spin
-                                                    indicator={
-                                                        <LoadingOutlined className="text-white" style={{ fontSize: 14 }} spin />
-                                                    }
-                                                />
-                                            ) : (
-                                                <CloseOutlined />
-                                            )}
-                                        </button>
-                                    </div> :
-                                    <Upload
-                                        showUploadList={false}
-                                        beforeUpload={(file) => {
-                                            handleUploadImage(file);
-                                            return false;
-                                        }}
-                                        className=""
-                                    >
-                                        <div className="w-32 h-32 flex items-center justify-center border-2 border-dashed rounded-md cursor-pointer">
-                                            {loadingFile ? (
-                                                <Spin
-                                                    indicator={
-                                                        <LoadingOutlined style={{ fontSize: 24 }} spin />
-                                                    }
-                                                />
-                                            ) : (
-                                                <PlusOutlined className="text-gray-400" />
-                                            )}
+                        <div className="md:w-1/3">
+                            <Form.Item name="image" label="Hình ảnh">
+                                <div className="relative flex items-center justify-center border-2 border-dashed rounded-md p-2">
+                                    {editingReward.imageUrl ? (
+                                        <div className="relative w-32 h-32">
+                                            <Image
+                                                src={editingReward.imageUrl}
+                                                alt="reward"
+                                                className="w-full h-full object-cover rounded-md"
+                                            />
+                                            <button
+                                                onClick={() => handleRemoveImage(editingReward?.id)}
+                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                                            >
+                                                {loadingFile ? (
+                                                    <Spin
+                                                        indicator={
+                                                            <LoadingOutlined
+                                                                className="text-white"
+                                                                style={{ fontSize: 14 }}
+                                                                spin
+                                                            />
+                                                        }
+                                                    />
+                                                ) : (
+                                                    <CloseOutlined />
+                                                )}
+                                            </button>
                                         </div>
-
-                                    </Upload>
-                                }
-                            </div>
-                        </Form.Item>
+                                    ) : (
+                                        <Upload
+                                            showUploadList={false}
+                                            beforeUpload={(file) => {
+                                                handleUploadImage(file);
+                                                return false;
+                                            }}
+                                            className="cursor-pointer"
+                                        >
+                                            <div className="w-32 h-32 flex items-center justify-center border-2 border-dashed rounded-md">
+                                                {loadingFile ? (
+                                                    <Spin
+                                                        indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
+                                                    />
+                                                ) : (
+                                                    <PlusOutlined className="text-gray-400" />
+                                                )}
+                                            </div>
+                                        </Upload>
+                                    )}
+                                </div>
+                            </Form.Item>
+                        </div>
                     )}
 
+                    {/* Form nhập thông tin */}
                     <div className="flex-1">
                         <Form.Item
                             name="minPoint"
@@ -211,10 +207,10 @@ const RewardModal: React.FC<rewardModalProps> = ({ visible, onCancel, onSave, ed
                                 { type: "number", min: 0, message: "Điểm phải là số không âm!" },
                                 { type: "number", max: 100000, message: "Điểm không được vượt quá 100,000!" },
                             ]}
-                            className=" flex-1"
                         >
                             <InputNumber className="w-full" />
                         </Form.Item>
+
                         <Form.Item
                             name="name"
                             label="Tên phần thưởng"
@@ -222,6 +218,7 @@ const RewardModal: React.FC<rewardModalProps> = ({ visible, onCancel, onSave, ed
                         >
                             <Input />
                         </Form.Item>
+
                         <Form.Item
                             name="description"
                             label="Mô tả"
@@ -230,12 +227,9 @@ const RewardModal: React.FC<rewardModalProps> = ({ visible, onCancel, onSave, ed
                             <Input.TextArea rows={4} />
                         </Form.Item>
                     </div>
-
                 </div>
-
             </Form>
         </Modal>
-
     );
 }
 

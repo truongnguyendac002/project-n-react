@@ -54,14 +54,10 @@ function TopBar() {
     };
 
     return (
-        <div className="flex justify-between items-center p-4 bg-white shadow-md rounded-t-xl">
+        <div className="flex justify-between items-center p-4 bg-white rounded-t-xl">
             <div className="text-lg font-bold text-gray-700">{currentTime}</div>
             <div className="flex items-center gap-4">
-                <input
-                    type="text"
-                    placeholder="Search"
-                    className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 border-none focus:outline-none shadow-sm"
-                />
+
                 {user ? (
                     <Dropdown menu={{ items: menuItems, onClick: handleMenuClick }} trigger={["click"]} placement="bottomRight">
                         <div className="flex items-center gap-2 cursor-pointer">

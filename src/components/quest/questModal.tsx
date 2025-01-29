@@ -94,21 +94,21 @@ const QuestModal: React.FC<QuestModalProps> = ({ visible, onCancel, onSave, sele
             onOk={handleSave}
             okText={editingQuest ? "Cập nhật" : "Thêm mới"}
             cancelText="Hủy"
+            width={800}  // Điều chỉnh chiều rộng modal nếu cần
+            style={{ overflowY: 'auto', whiteSpace: 'nowrap' }}  // Sử dụng style thay vì modalStyle
         >
             <Form form={form} layout="vertical">
                 <Form.Item
                     name="target"
                     label="Mục tiêu"
-                    rules={[{ required: true, message: "Vui lòng nhập mục tiêu!" }]}
-                >
+                    rules={[{ required: true, message: "Vui lòng nhập mục tiêu!" }]}>
                     <Input />
                 </Form.Item>
 
                 <Form.Item
                     name="description"
                     label="Mô tả"
-                    rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
-                >
+                    rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}>
                     <Input />
                 </Form.Item>
             </Form>

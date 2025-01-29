@@ -1,5 +1,5 @@
 import { Button, Card, Image, message, Table } from "antd";
-import { GoldFilled } from '@ant-design/icons';
+import { GoldFilled,EditOutlined, DeleteOutlined, PictureOutlined, FileTextOutlined, PushpinOutlined } from '@ant-design/icons';
 import { useAppSelector } from "../redux/reduxHook";
 import { IUserProfile } from "../models/User";
 import { IReward } from "../models/DailyReward";
@@ -82,50 +82,47 @@ function RewardPage() {
 
   const columns = [
     {
-      title: 'Hình ảnh',
+      title: <div className="flex justify-center text-xl"><PictureOutlined /></div>,
       key: 'imageUrl',
       render: (record: IReward) => (
-        <>
-          <Image src={
-            record.imageUrl
-              ? record.imageUrl
-              : 'https://img.freepik.com/free-vector/flat-football-cup-illustration_23-2150025071.jpg'
-          } alt={record.name} className="w-16 h-16 object-cover rounded-md" />
-        </>
+        <Image 
+          src={record.imageUrl ? record.imageUrl : 'https://img.freepik.com/free-vector/flat-football-cup-illustration_23-2150025071.jpg'} 
+          alt={record.name} 
+          className="w-16 h-16 object-cover rounded-md mx-auto" 
+        />
       ),
     },
     {
-      title: 'Tên phần thưởng',
+      title: <div className="flex justify-center text-xl"><FileTextOutlined /></div>,
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Mô tả',
+      title: <div className="flex justify-center text-xl"><PushpinOutlined /></div>,
       dataIndex: 'description',
       key: 'description',
     },
     {
-      title: 'Điểm yêu cầu',
+      title: <div className="flex justify-center text-xl"><DeleteOutlined /></div>,
       dataIndex: 'minPoint',
       key: 'minPoint',
     },
     {
-      title: 'Action',
+      title: <div className="flex justify-center text-xl"><EditOutlined /></div>,
       key: 'action',
       render: (record: IReward) => (
-        <>
-          <Button type="link" onClick={() => handleEditReward(record)}>
-            Edit
+        <div className=" text-center ">
+          <Button type="link" onClick={() => handleEditReward(record)} className="text-blue-600 hover:text-blue-800">
+            <EditOutlined />
           </Button>
-          <Button danger type="link" onClick={() => handleDeleteReward(record)}>
-            Delete
+          <Button danger type="link" onClick={() => handleDeleteReward(record)} className="text-red-600 hover:text-red-800">
+            <DeleteOutlined />
           </Button>
-        </>
-
+        </div>
       ),
     },
   ];
-
+  
   const handleAddNewReward = () => {
     setEditingReward(null);
     setRewardModalVisible(true);
@@ -169,7 +166,7 @@ function RewardPage() {
   }
 
   return (
-    <div className="pl-6 pr-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-full">
+    <div className="p-6 bg-white min-h-full">
       {/* Tổng coin đã kiếm được */}
       <div className="flex justify-between items-center mb-6">
         <div className="text-lg font-bold text-gray-700">
@@ -178,13 +175,12 @@ function RewardPage() {
         </div>
       </div>
 
-      <div className="flex mb-6 ">
+      <div className="flex flex-col lg:flex-row mb-6 gap-6">
         {/* Bên trái */}
-
-        <div className="w-1/3 pr-4 ">
+        <div className="lg:w-1/3 w-full">
           <Card bordered={false} loading={loadingArchive} className="rounded-lg shadow-lg">
             {/* Phần thưởng đã đạt được (nổi bật) */}
-            <div className="mb-6 ">
+            <div className="mb-6">
               <h3 className="text-2xl text-center font-semibold text-gray-700">Daily Rewards Achieved</h3>
               <div className="flex flex-col items-center mt-4">
                 {rewardAchieved ? (
@@ -196,7 +192,7 @@ function RewardPage() {
                     } alt={rewardAchieved.name} className="w-full h-32 object-cover rounded-md" />
                     <h4 className="mt-2 text-lg font-semibold text-gray-800">{rewardAchieved.name}</h4>
                     <p className="text-sm text-gray-600">{rewardAchieved.description}</p>
-                    <div className="text-sm text-gray-500">Points Required: {rewardAchieved.description}</div>
+                    <div className="text-sm text-gray-500">Points Required: {rewardAchieved.minPoint}</div>
                   </div>
                 ) : (
                   <p className="text-gray-600">No rewards achieved yet.</p>
@@ -207,7 +203,7 @@ function RewardPage() {
         </div>
 
         {/* Danh sách phần thưởng */}
-        <div className="w-2/3">
+        <div className="lg:w-2/3 w-full">
           <div className="bg-white rounded-lg shadow-lg p-4">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">Available Rewards</h3>
             <Table
