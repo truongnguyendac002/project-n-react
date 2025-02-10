@@ -1,5 +1,7 @@
 import { Button, Card, Image, message, Table } from "antd";
-import { GoldFilled,EditOutlined, DeleteOutlined, PictureOutlined, FileTextOutlined, PushpinOutlined } from '@ant-design/icons';
+import { GoldFilled,EditOutlined, DeleteOutlined, 
+  // PictureOutlined, FileTextOutlined, PushpinOutlined 
+} from '@ant-design/icons';
 import { useAppSelector } from "../redux/reduxHook";
 import { IUserProfile } from "../models/User";
 import { IReward } from "../models/DailyReward";
@@ -82,7 +84,7 @@ function RewardPage() {
 
   const columns = [
     {
-      title: <div className="flex justify-center text-xl"><PictureOutlined /></div>,
+      title: "Image",
       key: 'imageUrl',
       render: (record: IReward) => (
         <Image 
@@ -93,22 +95,22 @@ function RewardPage() {
       ),
     },
     {
-      title: <div className="flex justify-center text-xl"><FileTextOutlined /></div>,
+      title: "Reward",
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: <div className="flex justify-center text-xl"><PushpinOutlined /></div>,
+      title: "Description",
       dataIndex: 'description',
       key: 'description',
     },
     {
-      title: <div className="flex justify-center text-xl"><DeleteOutlined /></div>,
+      title: "Points Required",
       dataIndex: 'minPoint',
       key: 'minPoint',
     },
     {
-      title: <div className="flex justify-center text-xl"><EditOutlined /></div>,
+      title: "Action",
       key: 'action',
       render: (record: IReward) => (
         <div className=" text-center ">

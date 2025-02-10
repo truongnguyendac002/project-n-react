@@ -10,12 +10,12 @@ import { useAppSelector } from "../redux/reduxHook";
 import { IUserProfile } from "../models/User";
 import { useNavigate } from "react-router-dom";
 import {
-  CheckCircleOutlined,
-  AimOutlined,
-  FileTextOutlined,
-  StarOutlined,
-  PlayCircleOutlined,
-  EllipsisOutlined,
+  // CheckCircleOutlined,
+  // AimOutlined,
+  // FileTextOutlined,
+  // StarOutlined,
+  // PlayCircleOutlined,
+  // EllipsisOutlined,
   GoldFilled
 } from "@ant-design/icons";
 
@@ -138,7 +138,7 @@ function QuestPage() {
 
   const columns: QuestColumns[] = [
     {
-      title: <div className="flex justify-center"><CheckCircleOutlined className="text-lg" /></div>,
+      title: "Checked",
       key: "completed",
       render: (record: IQuest) => (
         <Checkbox
@@ -148,22 +148,22 @@ function QuestPage() {
       ),
     },
     {
-      title: <div className="flex justify-center"><AimOutlined className="text-lg" /></div>,
+      title: "Quest",
       dataIndex: "target",
       key: "target",
     },
     {
-      title: <div className="flex justify-center"><FileTextOutlined className="text-lg" /></div>,
+      title: "Description",
       dataIndex: "description",
       key: "description",
     },
     {
-      title: <div className="flex justify-center"><StarOutlined className="text-lg" /></div>,
+      title: "Points",
       dataIndex: "points",
       key: "points",
     },
     {
-      title: <div className="flex justify-center"><PlayCircleOutlined className="text-lg" /></div>,
+      title: "Roll Dice",
       key: "roll dice",
       render: (record: IQuest) => (
         <Button
@@ -177,7 +177,7 @@ function QuestPage() {
       ),
     },
     {
-      title: <div className="flex justify-center"><EllipsisOutlined className="text-lg" /></div>,
+      title: "Action",
       key: "edit",
       render: (record: IQuest) => (
         <div className="flex justify-center space-x-2">
@@ -195,7 +195,7 @@ function QuestPage() {
   ];
   
   return (
-    <div className="px-4 md:px-6 bg-white min-h-screen">
+    <div className="px-4 md:px-6 bg-white ">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div className="text-lg font-bold text-gray-700 flex items-center gap-2">
@@ -211,18 +211,9 @@ function QuestPage() {
       </div>
   
       {/* Content */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Hình ảnh */}
-        <div className="md:col-span-1 flex justify-center">
-          <img
-            src="https://media.giphy.com/media/l0ExdMHUDKteztyfe/giphy.gif"
-            alt="Capybara Fighting Monsters"
-            className="w-full max-w-sm md:max-w-full rounded-lg shadow-lg"
-          />
-        </div>
-  
+      <div className="grid grid-cols-1 gap-6"> 
         {/* Bảng danh sách quest */}
-        <div className="md:col-span-2">
+        <div className="">
           <div className="bg-white rounded-lg shadow-lg p-4 md:pr-4">
             <Table
               loading={loading}
