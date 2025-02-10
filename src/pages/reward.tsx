@@ -168,7 +168,7 @@ function RewardPage() {
   }
 
   return (
-    <div className="p-6 bg-white min-h-full">
+    <div className="px-4 bg-white min-h-full">
       {/* Tổng coin đã kiếm được */}
       <div className="flex justify-between items-center mb-6">
         <div className="text-lg font-bold text-gray-700">
